@@ -13,6 +13,6 @@ setup(
         "name registries and domain name registrars."
     ),
     install_requires=[
-        "BeautifulSoup >= 3.2.1",
+        "beautifulsoup4 >= 4.12.2",
     ],
 )

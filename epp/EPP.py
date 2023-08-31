@@ -3,9 +3,11 @@ import argparse
 import socket
 import ssl
 import struct
-from BeautifulSoup import BeautifulStoneSoup
-import commands
-from commands import contact
+
+from bs4 import BeautifulStoneSoup
+
+from . import commands
+from .commands import contact
 
 
 class EPP:
@@ -19,8 +21,8 @@ class EPP:
         try:
             self.ssl = ssl.wrap_socket(self.socket)
         except socket.error:
-            print "ERROR: Could not setup a secure connection."
-            print "Check whether your IP is allowed to connect to the host."
+            print("ERROR: Could not setup a secure connection.")
+            print("Check whether your IP is allowed to connect to the host.")
             exit(1)
         self.format_32 = self.format_32()
         self.login()
@@ -63,10 +65,10 @@ class EPP:
         try:
             code = int(result.get('code'))
         except AttributeError:
-            print "\nERROR: Could not get result code, exiting."
+            print("\nERROR: Could not get result code, exiting.")
             exit(1)
         if not silent or code not in (1000, 1300, 1500):
-            print("- [%d] %s" % (code, result.msg.text))
+            print(("- [%d] %s" % (code, result.msg.text)))
         if code == 2308:
             return False
         if code == 2502:
@@ -93,7 +95,7 @@ class EPP:
         soup = BeautifulStoneSoup(greeting)
         svid = soup.find('svid')
         version = soup.find('version')
-        print("Connected to %s (v%s)\n" % (svid.text, version.text))
+        print(("Connected to %s (v%s)\n" % (svid.text, version.text)))
 
         """ Login """
         xml = commands.login % self.config
@@ -114,7 +116,7 @@ class EPPObject:
         self.epp = epp
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
     def __getitem__(self, key):
         try:
@@ -127,7 +129,7 @@ class Contact(EPPObject):
     def __init__(self, epp, handle=False, **kwargs):
         self.epp = epp
         self.handle = handle
-        for k, v in kwargs.items():
+        for k, v in list(kwargs.items()):
             setattr(self, k, v)
 
     def __unicode__(self):
